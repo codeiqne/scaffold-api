@@ -15,3 +15,16 @@ export const dataSourceOptions: DataSourceOptions = {
 };
 
 export const dataSource = new DataSource(dataSourceOptions);
+
+export const pDataSourceOptions: DataSourceOptions = {
+    type: "mysql",
+    host: "scaffold-mysql",
+    port: 3306,
+    username: "root",
+    password: "scaffold",
+    database: "scaffold_data",
+    synchronize: true,
+    name: "pdb"
+};
+
+export const pDataSource = new DataSource(dataSourceOptions);

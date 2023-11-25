@@ -6,12 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from '../entities/project.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
+import { ProjectDatabases } from 'src/entities/projectDatabases.entity';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project) private projectRepo: Repository<Project>,
-    @InjectRepository(User) private userRepo: Repository<User>
+    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(ProjectDatabases) private pDatabaseRepo: Repository<ProjectDatabases>,
   ) {}
 
   async create(req: Request, createProjectDto: CreateProjectDto) {

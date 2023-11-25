@@ -27,39 +27,50 @@ services:
     volumes:
       - ./mariadb:/var/lib/mysql
     ports:
-      - ':3306'
-  project-dbs: # Project Databases
-    image: postgres
-    restart: unless-stopped
+      - '3306:3306'
+  
+  nodus-apache:
+    build:
+      context: nodus/
+      dockerfile: ../Dockerfile
+    container_name: scaffold-nodus-apache
     ports:
-      - "5432:5432"
-    container_name: scaffold-postgres
-    environment:
-      - POSTGRES_USER=scaffold
-      - POSTGRES_PASSWORD=scaffold
-      - POSTGRES_DB=scaffold_data
+      - "3001:80"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./nodus:/var/www/html
+    restart: unless-stopped
+    depends_on:
+      - nodus-mysql
+  nodus-mysql:
+    image: mysql
+    container_name: scaffold-nodus-mysql
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./nodus/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=scaffold
+      - MYSQL_DATABASE=scaffold_data
+    restart: unless-stopped
 
   ### DEVELOPMENT ONLY ####
-  # pma:
-  #   image: phpmyadmin/phpmyadmin
-  #   restart: unless-stopped
-  #   container_name: scaffold-phpmyadmin
-  #   environment:
-  #     - PMA_HOST=scaffold-mariadb
-  #   ports:
-  #     - '3001:80'
-  #   depends_on:
-  #     - db
-  # pgadmin:
-  #   container_name: scaffold-pgadmin
-  #   image: dpage/pgadmin4
-  #   depends_on:
-  #     - project-dbs
-  #   ports:
-  #     - "5050:80"
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: pgadmin4
-  #   restart: unless-stopped
+  pma:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    container_name: scaffold-phpmyadmin
+    environment:
+      - PMA_HOST=scaffold-mariadb
+    ports:
+      - '3010:80'
+    depends_on:
+      - db
+  nodus-pma:
+    container_name: scaffold-nodus-phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - nodus-mysql
+    ports:
+      - "3011:80"
+    environment:
+      - PMA_HOST=nodus-mysql
+    restart: unless-stopped

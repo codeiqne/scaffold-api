@@ -5,7 +5,9 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('project')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+  ) {}
 
   @Post()
   create(@Request() req, @Body() createProjectDto: CreateProjectDto) {
@@ -31,4 +33,24 @@ export class ProjectController {
   remove(@Request() req, @Param('id') id: string) {
     return this.projectService.remove(req, id);
   }
+
+
+
+/* 
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │   PROJECT SPECIFIC                                                          │
+  ├─────────────────────────────────────────────────────────────────────────────┤
+  │   Databases                                                                 │
+  └─────────────────────────────────────────────────────────────────────────────┘
+ */
+  @Get(':id/database')
+  databaseList(@Request() req, @Param('id') id: string) {
+    // return this.databaseService.getAll(this.projectService, req, id);
+  }
+
+  @Get(':id/database/:did')
+  databaseGet(@Request() req, @Param('id') id: string, @Param('did') databaseId: string) {
+    // return this.databaseService.getOne(this.projectService, req, id, databaseId);
+  }
+
 }
