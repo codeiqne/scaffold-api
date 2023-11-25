@@ -1,73 +1,57 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <img src="assets/temp_logo.png" width="128" alt="Scaffold Logo">
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+<p align="center" style="font-size: 32px">Scaffold API</p>
+<p align="center">
+  A self-hosted <b><a href="https://firebase.google.com/">Firebase</a></b> clone.
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is only the API part. The front-end is being worked on.
 
 ## Installation
+Currently installation on Docker is available, however we are working on other methods as well.
 
+### Docker
+> ❗ Before you start, you need to install <a href="Docker" target="_blank">Docker</a> and <a href="https://nodejs.org" target="_blank">Node.js</a>.
+
+Download or clone this repository, `cd` into it and install packages:
 ```bash
+$ git clone https://github.com/codeiqne/scaffold-api.git
+$ cd scaffold-api
 $ npm install
 ```
+Then change some variables in `docker-compose.yml`:
+- Change `SCAFFOLD_JWT_SECRET` to a randomly generated string
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+If you want to enable PhpMyAdmin uncomment  these lines in `docker-compose.yml`:
+```yml
+pma:
+  image: phpmyadmin/phpmyadmin
+  restart: unless-stopped
+  container_name: scaffold-phpmyadmin
+  environment:
+    - PMA_HOST=scaffold-mariadb
+  ports:
+    - '5050:80'
+  depends_on:
+    - db
 ```
-
-## Test
-
+Now you need to migrate the database. Initialize the database by running
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ docker compose up -d
+# Turn off the API
+$ docker stop scaffold-api
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Run migrations and the API using
+```bash
+$ npm run migration:run
+$ docker start scaffold-api
+```
+Now check the logs of the container. There shouldn't be any errors.
+```bash
+$ docker logs scaffold-api -f
+```
+If the last line says `Nest application successfully started` congrats, you are now running a Scaffold API instance. Access it using the port `3000`.

@@ -28,16 +28,15 @@ services:
       - ./mariadb:/var/lib/mysql
     ports:
       - '5432:3306'
-    # user: "${uid}:${gid}"
 
   #### DEVELOPMENT ONLY ####
-  pma:
-    image: phpmyadmin/phpmyadmin
-    restart: unless-stopped
-    container_name: scaffold-phpmyadmin
-    environment:
-      - PMA_HOST=scaffold-mariadb
-    ports:
-      - '5050:80'
-    depends_on:
-      - db
+  # pma:
+  #   image: phpmyadmin/phpmyadmin
+  #   restart: unless-stopped
+  #   container_name: scaffold-phpmyadmin
+  #   environment:
+  #     - PMA_HOST=scaffold-mariadb
+  #   ports:
+  #     - '5050:80'
+  #   depends_on:
+  #     - db
