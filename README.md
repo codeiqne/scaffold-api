@@ -2,7 +2,6 @@
   <img src="assets/temp_logo.png" width="128" alt="Scaffold Logo">
 </p>
 
-<p align="center" style="font-size: 32px">Scaffold API</p>
 <p align="center">
   A self-hosted <b><a href="https://firebase.google.com/">Firebase</a></b> clone.
 </p>
