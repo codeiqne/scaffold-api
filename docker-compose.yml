@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scaffold-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/var/scaffold
+    depends_on:
+      - db
+    environment:
+      - SCAFFOLD_JWT_SECRET=8YZKSNc+>WNq$VMT*&<G>bfw]0Pr0?aP646n5WZabQ.gvWw]w*DCKnqVJUy^3rVP
+    restart: unless-stopped
+  db:
+    image: mariadb
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=mariadb
+      - MARIADB_USER=scaffold
+      - MARIADB_PASSWORD=scaffold
+      - MARIADB_DATABASE=scaffold
+    container_name: scaffold-mariadb
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    ports:
+      - '5432:3306'
+    # user: "${uid}:${gid}"
+
+  #### DEVELOPMENT ONLY ####
+  pma:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    container_name: scaffold-phpmyadmin
+    environment:
+      - PMA_HOST=scaffold-mariadb
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
